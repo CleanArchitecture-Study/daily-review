@@ -7,7 +7,7 @@
   <tr>
     <td>
       <a href="https://github.com/us00ng">
-        <img src="https://avatars.githubusercontent.com/u/86238720?v=4" width="100" style="max-width: 100%;">
+        <img src="https://avatars.githubusercontent.com/u/169980619?v=4" width="100" style="max-width: 100%;">
       </a>
     </td>
     <td>
@@ -28,7 +28,7 @@
   </tr>
   <tr>
     <td align="center">
-      <a href="https://github.com/syy0O">유송연</a>
+      <a href="https://github.com/us00ng">유송연</a>
     </td>
     <td align="center">
       <a href="https://github.com/postrel63">김동욱</a>
