@@ -31,13 +31,13 @@
       <a href="https://github.com/syy0O">유송연</a>
     </td>
     <td align="center">
-      <a href="https://github.com/SihyunSeo">김동욱</a>
+      <a href="https://github.com/postrel63">김동욱</a>
     </td>
     <td align="center">
-      <a href="https://github.com/xeunnie">김우혁</a>
+      <a href="https://github.com/sue06004">김우혁</a>
     </td>
     <td align="center">
-      <a href="https://github.com/subi930">오규림</a>
+      <a href="https://github.com/ohgyulim">오규림</a>
     </td>
   </tr>
 </table>
