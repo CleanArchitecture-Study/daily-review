@@ -1,4 +1,4 @@
-package org.example.day09_totalproject.orders;
+package org.example.day09_totalproject.order.adapter.in.web;
 
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -9,7 +9,9 @@ import org.example.day09_totalproject.common.BaseResponseStatus;
 import org.example.day09_totalproject.learning.course.model.Course;
 import org.example.day09_totalproject.member.model.CustomUserDetails;
 import org.example.day09_totalproject.member.model.Member;
-import org.example.day09_totalproject.orders.model.response.GetOrdersRes;
+import org.example.day09_totalproject.order.application.port.in.GetOrderCourseUseCase;
+import org.example.day09_totalproject.order.application.port.in.GetOrderRes;
+import org.example.day09_totalproject.order.application.port.in.OrderUseCase;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,27 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/orderss")
+@RequestMapping("/orders")
 @RequiredArgsConstructor
-public class OrdersController {
-    private final OrdersService ordersService;
+public class OrderController {
+    private final OrderUseCase orderUseCase;
+    private final GetOrderCourseUseCase getOrderCourseUseCase;
 
     @GetMapping("/validation")
-    public BaseResponse<GetOrdersRes> validation(@AuthenticationPrincipal CustomUserDetails customUserDetails, String impUid){
+    public BaseResponse<GetOrderRes> validation(@AuthenticationPrincipal CustomUserDetails customUserDetails, String impUid){
         Member member = null;
         if (customUserDetails != null){
             member = customUserDetails.getMember();
         }
         try{
-            IamportResponse<Payment> iamportResponse = ordersService.getOrderInfo(impUid);
-            Course orderCourse = ordersService.getOrderCourse(iamportResponse);
+            IamportResponse<Payment> iamportResponse = orderUseCase.getOrderInfo(impUid);
+            Course orderCourse = getOrderCourseUseCase.getOrderCourse(iamportResponse);
             if (orderCourse == null){
                 return new BaseResponse<>(BaseResponseStatus.ORDERS_VALIDATION_FAIL);
             }
-            boolean result = ordersService.checkValidateOrder(iamportResponse, orderCourse);
+            boolean result = orderUseCase.checkValidateOrder(iamportResponse, orderCourse);
             if(result){
-                GetOrdersRes getOrdersRes = ordersService.registerOrders(orderCourse, member, impUid);
-                return new BaseResponse<>(getOrdersRes);
+                GetOrderRes getOrderRes = orderUseCase.registerOrder(orderCourse, member, impUid);
+                return new BaseResponse<>(getOrderRes);
             } else{
                 return new BaseResponse<>(BaseResponseStatus.IAMPORT_ERROR);
             }
