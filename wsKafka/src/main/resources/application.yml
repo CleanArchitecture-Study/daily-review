@@ -1,0 +1,9 @@
+server:
+  port: ${PORT}
+
+kafka:
+  connection:
+    producer:
+      host: ${PRODUCER_HOST}
+    consumer:
+      host: ${CONSUMER_HOST}
