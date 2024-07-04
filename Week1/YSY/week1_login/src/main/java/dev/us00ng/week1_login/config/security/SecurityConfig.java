@@ -1,6 +1,8 @@
 package dev.us00ng.week1_login.config.security;
 
 import dev.us00ng.week1_login.config.security.jwt.JwtFilter;
+import dev.us00ng.week1_login.domain.oauth.OAuth2AuthenticationSuccessHandler;
+import dev.us00ng.week1_login.domain.oauth.OAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +26,10 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtFilter jwtFilter;
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2Service oAuth2Service;
+    
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
@@ -58,11 +55,15 @@ public class SecurityConfig {
                 .formLogin((f) -> f.disable())
                 .authorizeHttpRequests((auth) ->
                     auth
-                        .requestMatchers("/member/**", "/auth/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/member/**", "/oauth2/**").permitAll()
+                        .anyRequest().permitAll())
                 .sessionManagement((session) -> {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                         session.sessionFixation().none();})
+                .oauth2Login((config) -> {
+                    config.successHandler(oAuth2AuthenticationSuccessHandler);
+                    config.userInfoEndpoint((endpoint) -> endpoint.userService(oAuth2Service));
+                })
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
