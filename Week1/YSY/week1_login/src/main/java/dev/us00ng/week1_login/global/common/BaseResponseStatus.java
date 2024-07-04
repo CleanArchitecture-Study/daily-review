@@ -1,0 +1,38 @@
+package dev.us00ng.week1_login.global.common;
+
+import lombok.Getter;
+
+/**
+ * 에러 코드 관리
+ */
+@Getter
+public enum BaseResponseStatus {
+    /**
+     * 1000 : 요청 성공
+     */
+    SUCCESS(true, 1000, "요청에 성공하였습니다."),
+
+
+    /**
+     * 3000 : MEMBER 에러
+     */
+    USER_NOT_FOUND(false, 3000, "해당하는 회원을 찾을 수 없습니다,"),
+    POST_USERS_EMPTY_EMAIL(false, 3001, "이메일을 입력해주세요."),
+    POST_USERS_INVALID_EMAIL(false, 3002, "이메일 형식을 확인해주세요."),
+    POST_USERS_EXISTS_EMAIL(false,3003,"중복된 이메일입니다."),
+
+    POST_USERS_EMPTY_NAME(false,3004,"이름을 입력해주세요."),
+    POST_USERS_EMPTY_PASSWORD(false,3005,"비밀번호를 입력해주세요."),
+    POST_USERS_INVALID_USER_INFO(false,3006,"이메일 또는 패스워드를 확인해주세요.");
+
+
+    private final boolean isSuccess;
+    private final int code;
+    private final String message;
+
+    private BaseResponseStatus(boolean isSuccess, int code, String message) {
+        this.isSuccess = isSuccess;
+        this.code = code;
+        this.message = message;
+    }
+}
