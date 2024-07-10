@@ -1,4 +1,4 @@
-package org.example.oauth.member;
+package org.example.oauth.member.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
