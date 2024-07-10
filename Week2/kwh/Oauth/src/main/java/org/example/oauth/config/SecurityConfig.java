@@ -1,6 +1,8 @@
 package org.example.oauth.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.oauth.oauth.OAuth2AuthenticationSuccessHandler;
+import org.example.oauth.oauth.OAuth2Service;
 import org.example.oauth.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2Service oAuth2Service;
 
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -43,6 +47,11 @@ public class SecurityConfig {
         );
 
         http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
+        http.oauth2Login((config) -> {
+            config.successHandler(oAuth2AuthenticationSuccessHandler);
+            config.userInfoEndpoint((endPoint) -> endPoint.userService(oAuth2Service));
+        });
 
         return http.build();
     }
