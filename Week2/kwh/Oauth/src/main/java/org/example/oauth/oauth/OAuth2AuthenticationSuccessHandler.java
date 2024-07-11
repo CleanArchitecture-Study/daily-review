@@ -46,6 +46,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             memberRepository.save(member);
         }
         String accessToken = jwtUtil.createAccessToken(member.getId(), member.getEmail(), member.getRole());
+        System.out.println(accessToken);
         String refreshToken = jwtUtil.createRefreshToken(member.getId(), member.getEmail(), member.getRole());
 
         RefreshToken refreshTokenEntity = RefreshToken.builder()

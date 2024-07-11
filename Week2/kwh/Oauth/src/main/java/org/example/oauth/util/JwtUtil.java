@@ -1,5 +1,6 @@
 package org.example.oauth.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,8 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private SecretKey secretKey;
-    public final Integer ACCESS_EXPIRE = 1000 * 60 * 60;
-    public final Integer REFRESH_EXPIRE = 1000 * 60 * 60 * 24 * 14;
+    public final Integer ACCESS_EXPIRE = 1000 * 30;
+    public final Integer REFRESH_EXPIRE = 1000 * 60;
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
         this.secretKey = new SecretKeySpec(
@@ -38,8 +39,11 @@ public class JwtUtil {
     }
 
     public Boolean isExpired(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        try{
+            return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        } catch (ExpiredJwtException expiredJwtException){
+            return true;
+        }
     }
 
     public String createAccessToken(Long id, String email, String role) {

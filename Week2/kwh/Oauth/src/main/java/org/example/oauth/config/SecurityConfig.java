@@ -1,6 +1,7 @@
 package org.example.oauth.config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.oauth.jwt.RefreshTokenRepository;
 import org.example.oauth.oauth.OAuth2AuthenticationSuccessHandler;
 import org.example.oauth.oauth.OAuth2Service;
 import org.example.oauth.util.JwtUtil;
@@ -24,6 +25,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2Service oAuth2Service;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -46,7 +48,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
         );
 
-        http.addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil, refreshTokenRepository), UsernamePasswordAuthenticationFilter.class);
 
         http.oauth2Login((config) -> {
             config.successHandler(oAuth2AuthenticationSuccessHandler);
