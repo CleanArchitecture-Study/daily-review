@@ -12,6 +12,8 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private SecretKey secretKey;
+    public final Integer ACCESS_EXPIRE = 1000 * 60 * 60;
+    public final Integer REFRESH_EXPIRE = 1000 * 60 * 60 * 24 * 14;
 
     public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
         this.secretKey = new SecretKeySpec(
@@ -40,13 +42,24 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createToken(Long id, String email, String role) {
+    public String createAccessToken(Long id, String email, String role) {
         return Jwts.builder()
                 .claim("id", id)
                 .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + (60*60*1000)))
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_EXPIRE))
+                .signWith(secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken(Long id, String email, String role) {
+        return Jwts.builder()
+                .claim("id", id)
+                .claim("email", email)
+                .claim("role", role)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRE))
                 .signWith(secretKey)
                 .compact();
     }
